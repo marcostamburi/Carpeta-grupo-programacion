@@ -1,1 +1,5 @@
-Este archivo lo hice al pedo ni se gasten
+Grupo: 
+-Marcos Tamburi
+-Franco Balduini
+-Mariano Gerosa
+-Nicolas Robles
