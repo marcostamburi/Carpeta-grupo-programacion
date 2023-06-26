@@ -1,13 +1,10 @@
 Algoritmo sin_titulo
 	Definir rutasAereas, dni, pasajeros, telefono, pasajerosDos como cadena
 	Definir cantidadPasajeros, pasajeroFrecuente, pasajesVendido, asiento, opcionMenu,dniLong, telLong Como Entero
-	Definir opcionSwitch Como Caracter
+	Definir opcionSwitch, salir Como Caracter
 	Definir equipajePasajero Como Logico
-	Dimension rutasAereas[4], capacidadPasajeros[4], pasajesVendido[4], dni[4,100], asiento[4], pasajeros[4,120],telefono[4,100]
+	Dimension rutasAereas[4], capacidadPasajeros[4], pasajesVendido[4], dni[4,100], asiento[4,120], pasajeros[4,120],telefono[4,100]
 	Dimension pasajeroFrecuente[4,100], equipajePasajero[4,120]
-	
-	
-	
 	
 	rutasAereas[0] <- "Buenos Aires - Bariloche"
 	rutasAereas[1] <- "Buenos Aires - Salta"
@@ -24,10 +21,6 @@ Algoritmo sin_titulo
 	pasajesVendido[2] <- 0
 	pasajesVendido[3] <- 0
 	
-	asiento[0] <- 0
-	asiento[1] <- 0
-	asiento[2] <- 0
-	asiento[3] <- 0
 	
 	Repetir
 		mostrarMenu()
@@ -58,33 +51,28 @@ Algoritmo sin_titulo
 				SiNo
 					porcentajeVentasPorRuta(rutasAereas,capacidadPasajeros, pasajesVendido)
 				FinSi
-			6: 
-				Escribir "ADIOS PANITA"
+			6: //VALIDAMOS QUE SI EL USUARIO NO ESCRIBE SALIR EL PROGRAMA SIGUE EN EJECUCION
+				Escribir "Estas seguro que desea salir?"
+				Escribir "Escriba SALIR para confirmar"
+				Leer salir
+				salir <- Mayusculas(salir)
+				Si salir = "SALIR" Entonces
+					Escribir "Hasta luego"
+				Fin Si
 			De Otro Modo:
 				Escribir "Opción inválida. Intente nuevamente"
-				
-				
-				
-				
 		FinSegun
-	Hasta Que opcionMenu = 6 
-	
-	
-	
-
+	Hasta Que salir = "SALIR"
 FinAlgoritmo
 
+//MENU PRINCIPAL
 SubProceso mostrarMenu()
 	Escribir "Bienvenido al sistema de venta de pasajes"
 	Escribir "1- Venta de pasajes"
 	Escribir "2- Buscar pasaje vendido"
 	Escribir "3- Buscar pasajero"
 	Escribir "4- Ordenar y mostrar lista pasajeros"
-	Escribir "a. Por número de asiento Ascendente"
-	Escribir "b. Por número de asiento Descendente"
 	Escribir "5- Listado/s"
-	Escribir "a. Cantidad de pasajes vendido por ruta aérea"
-	Escribir "b. Porcentaje de ventas por ruta aérea"
 	Escribir "6- Salir"
 FinSubProceso
 
@@ -111,12 +99,11 @@ Funcion ventaPasajes(rutasAereas,pasajesVendido,capacidadPasajeros,dni,pasajeros
 		Leer ruta
 	FinMientras
 	
-	ruta <- ruta - 1 
+	ruta <- ruta - 1 //RESTAMOS UNO PARA QUE SEA CORRESPONDIENTE AL INDICE YA QUE EL 1 SERIA EL 0 (0...3)
 	
 	Si pasajesVendido[ruta] = capacidadPasajeros[ruta] Entonces
 		Escribir "No hay pasajes disponibles"
 	SiNo
-		pasajesVendido[ruta]<-pasajesVendido[ruta]+1
 		Escribir "Ingrese el nombre y apellido del pasajero"
 		Leer nombreApellido
 		
@@ -165,18 +152,21 @@ Funcion ventaPasajes(rutasAereas,pasajesVendido,capacidadPasajeros,dni,pasajeros
 			Fin Si
 		mientras Que numPasajeroFrecuente<=0
 		
+		//UTILIZAMOS ESTO PASA CONTAR LOS PASAJES VENDIDOS Y LLEVAR UN REGISTRO DE LOS ASIENTOS
+		asientoPasajero <- pasajesVendido[ruta] 
+		pasajesVendido[ruta] <- pasajesVendido[ruta] + 1
 		
-		asientoPasajero <- asiento[ruta]
-		asiento[ruta]<-asiento[ruta]+1
-		
+		//CALCULAMOS EL COSTO DE LOS PASAJES APLICANDO LOS INCREMENTOS SEGUN LA CANTIDAD DE PASAJES VENDIDOS
 		costoPasaje <- CalcularCostoPasaje(ruta,cantidadPasajeros,equipajeBodega)
 		
+		//ALMACENAMIENTO DE DATOS
 		equipajePasajero[ruta,asientoPasajero]<- equipajeBodega
 		pasajeros[ruta,asientoPasajero] <- nombreApellido
 		dni[ruta,asientoPasajero] <- dniPasajero
 		telefono[ruta,asientoPasajero] <- telefonoPasajero
 		pasajeroFrecuente[ruta,asientoPasajero] <- numPasajeroFrecuente
-		pasajesVendido[ruta] <- pasajesVendido[ruta] 
+		asiento[ruta, asientoPasajero] <- pasajesVendido[ruta]
+		
 		
 		Escribir "Resumen de la venta"
 		Escribir "Ruta: ", rutasAereas[ruta]
@@ -185,13 +175,19 @@ Funcion ventaPasajes(rutasAereas,pasajesVendido,capacidadPasajeros,dni,pasajeros
 		Escribir "Télefono: ", telefonoPasajero
 		Escribir "Equipaje en Bodega: ", equipajeBodega
 		Escribir "Número de pasajero frecuente: ", numPasajeroFrecuente
-		Escribir "Asiento: ", asientoPasajero+1
+		Escribir "Asiento: ", asientoPasajero
 		Escribir "Costo pasaje: $", costoPasaje
+		
+		//SIMULA UN SYSTEM("PAUSE"); EN C
+		Escribir "Presione una tecla para continuar..."
+		leer var
+		Limpiar Pantalla
 	FinSi
 	
 	
 	
 FinFuncion
+
 Funcion costoPasaje <- CalcularCostoPasaje(ruta,cantidadPasajeros,equipajeBodega)
 	Definir costoInical Como Real
 	
@@ -240,27 +236,44 @@ FinFuncion
 
 SubProceso buscarPasajeVendido(pasajesVendido,asiento, pasajeros, dni, rutasAereas)
 	Definir asientoBuscado, i, j, rutaBuscada Como Entero
+	Definir bandera Como Logico
+	bandera <- Falso
 	Escribir "Ingrese la ruta"
+	Para i = 0 Hasta 3 Hacer
+		Escribir i+1, " ", rutasAereas[i]
+	FinPara
+	
 	Leer rutaBuscada
-	rutaBuscada<-rutaBuscada-1
+	rutaBuscada<-rutaBuscada-1 //SE REPITE EL MISMO CASO QUE EN RUTA (EXPLICADO ANTERIORMENTE) (LINEA 102)
 	Escribir "Ingrese el número de asiento"
 	Leer asientoBuscado
-	asientoBuscado<-asientoBuscado-1
 	Para i<-0 Hasta pasajesVendido[rutaBuscada] Con Paso 1 Hacer
-		Si i=asientoBuscado Entonces
+		Si asiento[rutaBuscada,i]=asientoBuscado Entonces
 			Escribir "Nombre y Apellido: ", pasajeros[rutaBuscada, i]
 			Escribir "Destino: ", rutasAereas[rutaBuscada]
-			Escribir "DNI: ", dni[rutaBuscada, i] 
+			Escribir "DNI: ", dni[rutaBuscada, i]
+			bandera <- Verdadero
 		Fin Si
 	Fin Para
 	
+	Si no bandera Entonces
+		Escribir "Asiento no vendido"
+	Fin Si
 	
+	Escribir "Presione una tecla para continuar..."
+	leer var
+	Limpiar Pantalla
 FinSubProceso
 
 SubProceso buscarPasajero(pasajesVendido, pasajeros, dni, rutasAereas)
 	Definir  i, j, rutaBuscada Como Entero
 	Definir nombreBuscado Como Caracter
+	Definir  bandera Como Logico
+	bandera <- Falso
 	Escribir "Ingrese la ruta"
+	Para i = 0 Hasta 3 Hacer
+		Escribir i+1, " ", rutasAereas[i]
+	FinPara
 	Leer rutaBuscada
 	rutaBuscada<-rutaBuscada-1
 	Escribir "Ingrese el nombre que desea buscar"
@@ -272,9 +285,17 @@ SubProceso buscarPasajero(pasajesVendido, pasajeros, dni, rutasAereas)
 			Escribir "Nombre y Apellido: ", pasajeros[rutaBuscada, i]
 			Escribir "Destino: ", rutasAereas[rutaBuscada]
 			Escribir "DNI: ", dni[rutaBuscada, i]
-			
+			bandera <- Verdadero
 		FinSi
 	FinPara
+	
+	Si no bandera Entonces
+		Escribir "Pasajero no encontrado"
+	Fin Si
+	
+	Escribir "Presione una tecla para continuar..."
+	leer var
+	Limpiar Pantalla
 FinSubProceso
 
 SubProceso ordenarListaPasajeros(rutasAereas,pasajesVendido,dni,pasajeros,telefono,asiento,pasajeroFrecuente,equipajePasajero)
@@ -290,20 +311,19 @@ SubProceso ordenarListaPasajeros(rutasAereas,pasajesVendido,dni,pasajeros,telefo
 	FinMientras
 	
 	Escribir "Ingrese la ruta"
+	Para i = 0 Hasta 3 Hacer
+		Escribir i+1, " ", rutasAereas[i]
+	FinPara
 	Leer rutaBuscada
+	rutaBuscada <- rutaBuscada - 1
 	
 	Si opcionSwitch = "a" o opcionSwitch = "A" Entonces
-		//ordenarAscendenteCadena(rutasAereas)
-		//ordenarAscendenteCadena(dni)
-		//ordenarAscendenteCadena(pasajeros)
-		//ordenarAscendenteCadena(telefono)
-		
-		//ordenarAscendenteEntero(pasajeroFrecuente)
-		//ordenarAscendenteEntero(pasajesVendido)
-		//ordenarAscendenteEntero(asiento)
-	FinSi
+		ordenarAscendente(pasajesVendido, dni, pasajeros, telefono, asiento, pasajeroFrecuente, equipajePasajero, rutaBuscada)
+		mostrarLista(pasajesVendido, dni, pasajeros, telefono, asiento, pasajeroFrecuente, equipajePasajero, rutaBuscada)
+	finSi
 	Si opcionSwitch = "b" o opcionSwitch = "B" Entonces
-		//ordenarDescendente()
+		ordenarDescendente(pasajesVendido, dni, pasajeros, telefono, asiento, pasajeroFrecuente, equipajePasajero, rutaBuscada)
+		mostrarLista(pasajesVendido, dni, pasajeros, telefono, asiento, pasajeroFrecuente, equipajePasajero, rutaBuscada)
 	Fin Si
 FinSubProceso
 
@@ -314,39 +334,113 @@ SubProceso cantidadPasajesVendidosPorRuta(rutasAereas,pasajesVendido)
 	Fin Para
 FinSubProceso
 
-
+//PORCENTAJE DE PASAJES VENDIDOS POR CADA VUELO.
+//EJ: 30 PASAJES VENDIDOS DEL VUELO 1 = 25% DE 120
 SubProceso porcentajeVentasPorRuta(rutasAereas,capacidadPasajeros, pasajesVendido)
 	Para i<-0 Hasta 3 Con Paso 1 Hacer
 		Escribir "Porcentaje vendido en vuelo: ", rutasAereas[i]," ", (pasajesVendido[i]/capacidadPasajeros[i]*100),"%"
 	Fin Para
 	Escribir "Presione una tecla para continuar..."
 	leer var
+	Limpiar Pantalla
 FinSubProceso
 
 
+//SUBPROCESOS PARA ORDENAR ASCENDENTE
+SubProceso ordenarAscendente(pasajesVendido, dni, pasajeros, telefono, asiento, pasajeroFrecuente, equipajePasajero, rutaBuscada)
+	definir aux como cadena
+	Definir temp como entero
+	Definir aux2 Como Logico
+	Definir i, j Como Entero
+	Para i<- 0 Hasta pasajesVendido[rutaBuscada] - 2 Con Paso 1 Hacer
+		Para j<-i+1 Hasta pasajesVendido[rutaBuscada] - 1 Con Paso 1 Hacer
+			Si asiento[rutaBuscada, i] > asiento[rutaBuscada, j] entonces 
+				
+				temp <- pasajeroFrecuente[rutaBuscada, j]
+				pasajeroFrecuente[rutaBuscada, j] <- pasajeroFrecuente[rutaBuscada, i]
+				pasajeroFrecuente[rutaBuscada, i] <- temp
+				
+				temp <- asiento[rutaBuscada, j]
+				asiento[rutaBuscada, j] <- asiento[rutaBuscada, i]
+				asiento[rutaBuscada, i] <- temp
+				
+				aux2 <- equipajePasajero[rutaBuscada, j]
+				equipajePasajero[rutaBuscada, j] <- equipajePasajero[rutaBuscada, i]
+				equipajePasajero[rutaBuscada, i] <- aux2
+				
+				aux <- dni[rutaBuscada, j]
+				dni[rutaBuscada, j] <- dni[rutaBuscada, i]
+				dni[rutaBuscada, i] <- aux
+				
+				aux <- pasajeros[rutaBuscada, j]
+				pasajeros[rutaBuscada, j] <- pasajeros[rutaBuscada, i]
+				pasajeros[rutaBuscada, i] <- aux
+				
+				aux <- telefono[rutaBuscada, j]
+				telefono[rutaBuscada, j] <- telefono[rutaBuscada, i]
+				telefono[rutaBuscada, i] <- aux
+				
+			Fin Si
+		Fin Para
+	Fin Para
+FinSubProceso
 
 
+//SUBPROCESOS PARA ORDENAR DESCENDENTE
+SubProceso ordenarDescendente(pasajesVendido, dni, pasajeros, telefono, asiento, pasajeroFrecuente, equipajePasajero, rutaBuscada)
+	definir aux como cadena
+	Definir temp como entero
+	Definir aux2 Como Logico
+	Definir i, j Como Entero
+	Para i<- 0 Hasta pasajesVendido[rutaBuscada] - 2 Con Paso 1 Hacer
+		Para j<-i+1 Hasta pasajesVendido[rutaBuscada] - 1 Con Paso 1 Hacer
+			Si asiento[rutaBuscada, i] < asiento[rutaBuscada, j] entonces 
+				
+				temp <- pasajeroFrecuente[rutaBuscada, j]
+				pasajeroFrecuente[rutaBuscada, j] <- pasajeroFrecuente[rutaBuscada, i]
+				pasajeroFrecuente[rutaBuscada, i] <- temp
+				
+				temp <- asiento[rutaBuscada, j]
+				asiento[rutaBuscada, j] <- asiento[rutaBuscada, i]
+				asiento[rutaBuscada, i] <- temp
+				
+				aux2 <- equipajePasajero[rutaBuscada, j]
+				equipajePasajero[rutaBuscada, j] <- equipajePasajero[rutaBuscada, i]
+				equipajePasajero[rutaBuscada, i] <- aux2
+				
+				aux <- dni[rutaBuscada, j]
+				dni[rutaBuscada, j] <- dni[rutaBuscada, i]
+				dni[rutaBuscada, i] <- aux
+				
+				aux <- pasajeros[rutaBuscada, j]
+				pasajeros[rutaBuscada, j] <- pasajeros[rutaBuscada, i]
+				pasajeros[rutaBuscada, i] <- aux
+				
+				aux <- telefono[rutaBuscada, j]
+				telefono[rutaBuscada, j] <- telefono[rutaBuscada, i]
+				telefono[rutaBuscada, i] <- aux
+				
+				
+			Fin Si
+		Fin Para
+	Fin Para
+FinSubProceso
 
-
-//SUBPROCESOS PARA ORDENAR
-//SubProceso ordenarAscendenteCadena(array)
+//SUBPROCESO PARA MOSTRAR LISTAS ORDENADAS
+SubProceso mostrarLista(pasajesVendido, dni, pasajeros, telefono, asiento, pasajeroFrecuente, equipajePasajero, rutaBuscada)
+	Definir i Como Entero
+	Para i<-0 Hasta pasajesVendido[rutaBuscada] - 1 Con Paso 1 Hacer
+		
+		Escribir Sin Saltar pasajeros[rutaBuscada,i], " "
+		Escribir Sin Saltar dni[rutaBuscada,i], " "
+		Escribir Sin Saltar telefono[rutaBuscada,i], " "
+		Escribir Sin Saltar asiento[rutaBuscada,i], " "
+		Escribir Sin Saltar pasajeroFrecuente[rutaBuscada,i], " "
+		Escribir Sin Saltar equipajePasajero[rutaBuscada,i], " "
+		Escribir ""
+	Fin Para
 	
-//FinSubProceso
-//SubProceso ordenarAscendenteEntero(array)
-	
-//FinSubProceso
-//SubProceso ordenarDescendenteCadena(array)
-//	
-//FinSubProceso
-//SubProceso ordenarDescendenteEntero(array)
-//	
-//FinSubProceso
-//SubProceso ordenarAscendenteBool(array)
-//	
-//FinSubProceso
-//SubProceso ordenarDescendenteBool(array)
-//	
-//FinSubProceso
-
-
-	
+	Escribir "Presione una tecla para continuar..."
+	leer var
+	Limpiar Pantalla
+FinSubProceso
