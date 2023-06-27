@@ -3,8 +3,8 @@ Algoritmo sin_titulo
 	Definir cantidadPasajeros, pasajeroFrecuente, pasajesVendido, asiento, opcionMenu,dniLong, telLong Como Entero
 	Definir opcionSwitch, salir Como Caracter
 	Definir equipajePasajero Como Logico
-	Dimension rutasAereas[4], capacidadPasajeros[4], pasajesVendido[4], dni[4,100], asiento[4,120], pasajeros[4,120],telefono[4,100]
-	Dimension pasajeroFrecuente[4,100], equipajePasajero[4,120]
+	Dimension rutasAereas[4], capacidadPasajeros[4], pasajesVendido[4], dni[4,120], asiento[4,120], pasajeros[4,120],telefono[4,120]
+	Dimension pasajeroFrecuente[4,120], equipajePasajero[4,120]
 	
 	rutasAereas[0] <- "Buenos Aires - Bariloche"
 	rutasAereas[1] <- "Buenos Aires - Salta"
@@ -16,7 +16,7 @@ Algoritmo sin_titulo
 	capacidadPasajeros[2] <- 80
 	capacidadPasajeros[3] <- 80
 	
-	pasajesVendido[0]<- 0
+	pasajesVendido[0] <- 0
 	pasajesVendido[1] <- 0
 	pasajesVendido[2] <- 0
 	pasajesVendido[3] <- 0
